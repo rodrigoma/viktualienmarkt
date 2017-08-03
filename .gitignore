@@ -1,0 +1,33 @@
+target
+*/src/main/java/META-INF
+.classpath
+.project
+.settings
+.idea
+*.log
+*.iml
+*.out
+.metadata
+.DS_Store
+
+web/src/main/webapp/scripts/cepsearch.js
+test/src/META-INF/
+web/src/main/resources/rebel.xml
+/target
+/.idea
+bin
+*~
+web/src/main/webapp/transparente/*
+Servers/*
+rebel.xml
+infinitest.filter
+infinitest.filters
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
