@@ -16,7 +16,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static me.ramswaroop.jbot.core.slack.EventType.DIRECT_MESSAGE;
@@ -68,7 +71,7 @@ public class BrenjoeiBot extends Bot {
         logger.info("Qual o preço " + PRODUCTS.size());
         logger.info("User null: " + (event.getUser() == null));
         getProduct(event).setPrice(event.getText());
-        reply(session, event, new Message("Adicione uma url da imagem: (Digite NÃO para não adicionar)"));
+        reply(session, event, new Message("Quer mandar uma imagem? Se sim, me manda a URL aqui"));
         nextConversation(event);
     }
 
@@ -77,6 +80,7 @@ public class BrenjoeiBot extends Bot {
         logger.info("Adicionar imagem " + PRODUCTS.size());
         logger.info("User null: " + (event.getUser() == null));
         Product product = getProduct(event);
+
         if (!event.getText().equalsIgnoreCase("não")) {
             product.setUrl(event.getText().replace("<","").replace(">",""));
         }
@@ -85,6 +89,35 @@ public class BrenjoeiBot extends Bot {
         reply(session, event, new Message("Anuncio criado com sucesso"));
         stopConversation(event);
     }
+
+    private boolean isPositiveAnswer(String answer){
+        List<String> positives = new ArrayList<>();
+        positives.add("sim");
+        positives.add("aham");
+        positives.add("bora");
+        positives.add("vamo");
+        positives.add("fechou");
+
+        String normalizedAnswer = removeSpecialCharacters(answer.toLowerCase());
+
+        for (String positive : positives){
+            if (normalizedAnswer.contains(positive)) return true;
+        }
+
+        return false;
+    }
+
+    public static String removeSpecialCharacters(String str) {
+        return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+    }
+
+//    @Controller(events = {DIRECT_MESSAGE})
+//    public void confirm(WebSocketSession session, Event event) {
+//        logger.info("Confirmar " + products.size());
+//        logger.info("User null: " + (event.getUser() == null));
+//        reply(session, event, getProduct(event).toRichMessage());
+//        stopConversation(event);
+//    }
 
     private Product getProduct(Event event) {
         logger.info("Event userid:" + event.getUserId());

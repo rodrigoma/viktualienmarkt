@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moip.hackday.domain.ProductExtrator;
 import com.moip.hackday.domain.entity.Product;
 import com.moip.hackday.domain.repository.ProductRepository;
-import me.ramswaroop.jbot.core.slack.models.Attachment;
 import me.ramswaroop.jbot.core.slack.models.RichMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -91,12 +89,50 @@ public class SlackSlashCommand {
         }
 
         List<Product> products = productRepository.findByNameLike(text);
-        List<Attachment> attachments = products.stream().map(p -> p.toAttachment()).collect(Collectors.toList());
-        Attachment[] att = new Attachment[attachments.size()];
+        List<ButtonAttachment> attachments = products.stream().map(p -> p.toAttachment(userId)).collect(Collectors.toList());
+        ButtonAttachment[] att = new ButtonAttachment[attachments.size()];
         att = attachments.toArray(att);
 
         RichMessage richMessage = new RichMessage("Encontrei algumas ofertas interessantes :)");
         richMessage.setAttachments(att);
+        richMessage.setResponseType("in_channel");
+
+        if (att.length  < 1) {
+            richMessage.setText("Não encontrei nenhuma oferta interessante :(");
+        }
+
+        if (logger.isDebugEnabled()) {
+            try {
+                logger.debug("Reply (RichMessage): {}", new ObjectMapper().writeValueAsString(richMessage));
+            } catch (JsonProcessingException e) {
+                logger.debug("Error parsing RichMessage: ", e);
+            }
+        }
+
+        return richMessage.encodedMessage();
+    }
+
+    @RequestMapping(value = "/products/clear",
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public RichMessage clear(@RequestParam("token") String token,
+                             @RequestParam("team_id") String teamId,
+                             @RequestParam("team_domain") String teamDomain,
+                             @RequestParam("channel_id") String channelId,
+                             @RequestParam("channel_name") String channelName,
+                             @RequestParam("user_id") String userId,
+                             @RequestParam("user_name") String userName,
+                             @RequestParam("command") String command,
+                             @RequestParam("text") String text,
+                             @RequestParam("response_url") String responseUrl) {
+
+        if (!token.equals(slackToken)) {
+            return new RichMessage("Sorry! You're not lucky enough to use our slack command.");
+        }
+
+        productRepository.deleteAll();
+
+        RichMessage richMessage = new RichMessage("Cleaned up!");
         richMessage.setResponseType("in_channel");
 
         if (logger.isDebugEnabled()) {
