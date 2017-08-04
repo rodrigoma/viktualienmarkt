@@ -72,9 +72,13 @@ public class Product {
 
     public Attachment toAttachment() {
         Attachment attachment = new Attachment();
+        attachment.setColor("8B008B");
+
         attachment.setTitle(name);
-        attachment.setText("Estou vendendo '" + getName() + "' por: " + getPrice());
-        attachment.setAuthorName(getSellerName());
+        attachment.setText("Quer vender '" + getName() + "' por: " + getPrice());
+
+        attachment.setAuthorName("@" + getSellerName());
+        attachment.setAuthorLink("https://moip.slack.com/team/" + getSellerName());
 
         if (!getUrl().isEmpty()) {
             attachment.setThumbUrl(getUrl());
