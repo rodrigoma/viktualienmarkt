@@ -99,6 +99,7 @@ public class BrenjoeiBot extends Bot {
         logger.info("Products size: " + PRODUCTS.size());
         logger.info("User null: " + (event.getUser() == null));
         String username = BrenjoeiUtil.getUsername(event.getUserId(), slackToken);
+        logger.info("Username: " + username);
         return (PRODUCTS.containsKey(username) ? PRODUCTS.get(username) : new Product().setSellerName(username));
     }
 }
