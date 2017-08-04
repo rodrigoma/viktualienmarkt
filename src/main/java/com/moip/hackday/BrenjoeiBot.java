@@ -14,9 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.text.Normalizer;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static me.ramswaroop.jbot.core.slack.EventType.DIRECT_MESSAGE;
@@ -71,7 +69,7 @@ public class BrenjoeiBot extends Bot {
         logger.info("Event type: " + event.getType());
         logger.info("User null: " + (event.getUser() == null));
         getProduct(event).setPrice(event.getText());
-        reply(session, event, new Message("Quer mandar uma imagem? Me envie a URL, ou responda NÃO/NOPE/NEM."));
+        reply(session, event, new Message("Quer mandar uma imagem? Me envie a URL, ou responda NÃO."));
         nextConversation(event);
     }
 
@@ -82,28 +80,14 @@ public class BrenjoeiBot extends Bot {
         logger.info("User null: " + (event.getUser() == null));
         Product product = getProduct(event);
 
-        if (isNegativeAnswer(event.getText())) {
+        if (!event.getText().equalsIgnoreCase("não")) {
             product.setUrl(event.getText().replace("<","").replace(">",""));
         }
+
         productRepository.save(product);
         PRODUCTS.remove(event.getUserId());
         reply(session, event, new Message("Anuncio criado com sucesso"));
         stopConversation(event);
-    }
-
-    private boolean isNegativeAnswer(String answer){
-        List<String> negatives = new ArrayList();
-        negatives.add("nao");
-        negatives.add("nope");
-        negatives.add("nem");
-
-        String normalizedAnswer = removeSpecialCharacters(answer.toLowerCase());
-
-        for (String negative : negatives){
-            if (normalizedAnswer.contains(negative)) return true;
-        }
-
-        return false;
     }
 
     public static String removeSpecialCharacters(String str) {
