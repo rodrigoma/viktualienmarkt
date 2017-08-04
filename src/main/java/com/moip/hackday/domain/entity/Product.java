@@ -87,7 +87,7 @@ public class Product {
             sold.setText("Marcar como vendido");
             sold.setType("button");
             sold.setStyle("good");
-            sold.setValue("sold");
+            sold.setValue(getId());
 
             attachment.setActions(new Action[1]);
             attachment.getActions()[0] = sold;
