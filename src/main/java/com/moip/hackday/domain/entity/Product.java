@@ -89,7 +89,7 @@ public class Product {
         sold.setValue("sold");
 
         attachment.setActions(new Action[1]);
-        attachment.getActions()[1] = sold;
+        attachment.getActions()[0] = sold;
 
         if (!getUrl().isEmpty()) {
             attachment.setThumbUrl(getUrl());
