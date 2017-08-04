@@ -41,6 +41,7 @@ public class BrenjoeiBot extends Bot {
 
     @Controller(pattern = "(quero vender)", next = "nomeDoProduto")
     public void queroVender(WebSocketSession session, Event event) {
+        logger.info("Quero vender " + products.size());
         startConversation(event, "nomeDoProduto");
         Product product = getProduct(event);
         products.put(event.getUserId(), product);
@@ -49,6 +50,7 @@ public class BrenjoeiBot extends Bot {
 
     @Controller(next = "qualOPreco")
     public void nomeDoProduto(WebSocketSession session, Event event) {
+        logger.info("nome do produto " + products.size());
         getProduct(event).setName(event.getText());
         reply(session, event, new Message("Por quanto você quer vender?"));
         nextConversation(event);
@@ -56,6 +58,7 @@ public class BrenjoeiBot extends Bot {
 
     @Controller(next = "adicionarImagem")
     public void qualOPreco(WebSocketSession session, Event event) {
+        logger.info("qual o preco " + products.size());
         getProduct(event).setPrice(event.getText());
         reply(session, event, new Message("Adicione uma url da imagem: (Digite não para não adicionar)"));
         nextConversation(event);
@@ -63,6 +66,7 @@ public class BrenjoeiBot extends Bot {
 
     @Controller(next = "confirmar")
     public void adicionarImagem(WebSocketSession session, Event event) {
+        logger.info("adicionar imagem " + products.size());
         if (!event.getText().equalsIgnoreCase("não")) {
             getProduct(event).setUrl(event.getText());
         }
@@ -72,12 +76,15 @@ public class BrenjoeiBot extends Bot {
 
     @Controller
     public void confirmar(WebSocketSession session, Event event) {
+        logger.info("confirmar " + products.size());
         reply(session, event, getProduct(event).toRichMessage());
         stopConversation(event);
     }
 
     private Product getProduct(Event event) {
-        return (products.containsKey(event.getUserId()) ? products.get(event.getUserId()) : new Product().setSellerName(event.getUser().getName()));
+        logger.info("Event userid:" + event.getUserId());
+        logger.info("Products size: " + products.size());
+        return (products.containsKey(event.getUser().getId()) ? products.get(event.getUser().getId()) : new Product().setSellerName(event.getUser().getName()));
     }
 
     private final void reply(WebSocketSession session, Event event, RichMessage reply) {
