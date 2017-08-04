@@ -23,7 +23,7 @@ import java.util.Map;
 @Component
 public class BrenjoeiBot extends Bot {
 
-    private static final Logger logger = LoggerFactory.getLogger(SlackBot.class);
+    private static final Logger logger = LoggerFactory.getLogger(BrenjoeiBot.class);
 
     private Map<String, Product> products = new HashMap<String, Product>();
 
@@ -43,6 +43,7 @@ public class BrenjoeiBot extends Bot {
     @Controller(pattern = "(quero vender)", next = "nomeDoProduto", events = {EventType.DIRECT_MESSAGE})
     public void queroVender(WebSocketSession session, Event event) {
         logger.info("Quero vender " + products.size());
+        logger.info("User null: " + (event.getUser() == null));
         startConversation(event, "nomeDoProduto");
         Product product = getProduct(event);
         products.put(event.getUserId(), product);
@@ -52,6 +53,7 @@ public class BrenjoeiBot extends Bot {
     @Controller(next = "qualOPreco", events = {EventType.DIRECT_MESSAGE})
     public void nomeDoProduto(WebSocketSession session, Event event) {
         logger.info("nome do produto " + products.size());
+        logger.info("User null: " + (event.getUser() == null));
         getProduct(event).setName(event.getText());
         reply(session, event, new Message("Por quanto você quer vender?"));
         nextConversation(event);
@@ -60,6 +62,7 @@ public class BrenjoeiBot extends Bot {
     @Controller(next = "adicionarImagem", events = {EventType.DIRECT_MESSAGE})
     public void qualOPreco(WebSocketSession session, Event event) {
         logger.info("qual o preco " + products.size());
+        logger.info("User null: " + (event.getUser() == null));
         getProduct(event).setPrice(event.getText());
         reply(session, event, new Message("Adicione uma url da imagem: (Digite não para não adicionar)"));
         nextConversation(event);
@@ -68,6 +71,7 @@ public class BrenjoeiBot extends Bot {
     @Controller(next = "confirmar", events = {EventType.DIRECT_MESSAGE})
     public void adicionarImagem(WebSocketSession session, Event event) {
         logger.info("adicionar imagem " + products.size());
+        logger.info("User null: " + (event.getUser() == null));
         if (!event.getText().equalsIgnoreCase("não")) {
             getProduct(event).setUrl(event.getText());
         }
@@ -78,6 +82,7 @@ public class BrenjoeiBot extends Bot {
     @Controller(events = {EventType.DIRECT_MESSAGE})
     public void confirmar(WebSocketSession session, Event event) {
         logger.info("confirmar " + products.size());
+        logger.info("User null: " + (event.getUser() == null));
         reply(session, event, getProduct(event).toRichMessage());
         stopConversation(event);
     }
@@ -86,7 +91,7 @@ public class BrenjoeiBot extends Bot {
         logger.info("Event userid:" + event.getUserId());
         logger.info("Products size: " + products.size());
         logger.info("User null: " + (event.getUser() == null));
-        return (products.containsKey(event.getUser().getId()) ? products.get(event.getUser().getId()) : new Product().setSellerName(event.getUser().getName()));
+        return (products.containsKey(event.getUserId()) ? products.get(event.getUserId()) : new Product().setSellerName(event.getUserId()));
     }
 
     private final void reply(WebSocketSession session, Event event, RichMessage reply) {
