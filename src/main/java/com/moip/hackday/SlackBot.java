@@ -8,7 +8,6 @@ import me.ramswaroop.jbot.core.slack.models.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.regex.Matcher;
@@ -20,7 +19,7 @@ import java.util.regex.Matcher;
  * @author ramswaroop
  * @version 1.0.0, 05/06/2016
  */
-@Component
+//@Component
 public class SlackBot extends Bot {
 
     private static final Logger logger = LoggerFactory.getLogger(SlackBot.class);
