@@ -67,42 +67,13 @@ public class Product {
 
     @Override
     public String toString() {
-        return "{\n" +
-                "    \"text\": \"Aqui está o produto:\",\n" +
-                "    \"attachments\": [\n" +
-                "        {\n" +
-                "            \"title\": \"" + getName() + "\",\n" +
-                "            \"image_url\": \""+ getUrl() + "\"\n" +
-                "        },\n" +
-                "\t\t{\n" +
-                "            \"title\": \"Preço\",\n" +
-                "            \"text\": \"" + getPrice() + "\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"fallback\": \"Confirmar\",\n" +
-                "            \"title\": \"Confirmar\",\n" +
-                "            \"callback_id\": \"" + getId() + "\",\n" +
-                "            \"color\": \"#3AA3E3\",\n" +
-                "            \"attachment_type\": \"default\",\n" +
-                "            \"actions\": [\n" +
-                "                {\n" +
-                "                    \"name\": \"confirm\",\n" +
-                "                    \"text\": \"Confirmar\",\n" +
-                "                    \"type\": \"button\",\n" +
-                "\t\t\t\t\t\"style\": \"good\",\n" +
-                "                    \"value\": \"confirm\"\n" +
-                "                },\n" +
-                "                {\n" +
-                "                    \"name\": \"cancel\",\n" +
-                "                    \"text\": \"Cancelar\",\n" +
-                "                    \"type\": \"button\",\n" +
-                "\t\t\t\t\t\"style\": \"danger\",\n" +
-                "                    \"value\": \"cancel\"\n" +
-                "                }\n" +
-                "            ]\n" +
-                "        }\n" +
-                "    ]\n" +
-                "}";
+        return "Product{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", price='" + price + '\'' +
+                ", url='" + url + '\'' +
+                ", sellerName='" + sellerName + '\'' +
+                '}';
     }
 
     public RichMessage toRichMessage() {
