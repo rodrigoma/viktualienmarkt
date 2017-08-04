@@ -84,6 +84,7 @@ public class BrenjoeiBot extends Bot {
     private Product getProduct(Event event) {
         logger.info("Event userid:" + event.getUserId());
         logger.info("Products size: " + products.size());
+        logger.info("User null: " + (event.getUser() == null));
         return (products.containsKey(event.getUser().getId()) ? products.get(event.getUser().getId()) : new Product().setSellerName(event.getUser().getName()));
     }
 
