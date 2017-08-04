@@ -67,13 +67,7 @@ public class Product {
 
     @Override
     public String toString() {
-        return "Product{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", price='" + price + '\'' +
-                ", url='" + url + '\'' +
-                ", sellerName='" + sellerName + '\'' +
-                '}';
+        return getName() + " " + getPrice() + " offered by " + getSellerName() + "\n" + getUrl() + "\n \n";
     }
 
     public RichMessage toRichMessage() {

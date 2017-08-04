@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class SlackSlashCommand {
 
@@ -27,10 +29,10 @@ public class SlackSlashCommand {
     @Autowired
     private ProductRepository productRepository;
 
-    @RequestMapping(value = "/products",
+    @RequestMapping(value = "/products/create",
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public RichMessage onReceiveSlashCommand(@RequestParam("token") String token,
+    public RichMessage create(@RequestParam("token") String token,
                                              @RequestParam("team_id") String teamId,
                                              @RequestParam("team_domain") String teamDomain,
                                              @RequestParam("channel_id") String channelId,
@@ -65,6 +67,43 @@ public class SlackSlashCommand {
             }
         }
         
+        return richMessage.encodedMessage();
+    }
+
+    @RequestMapping(value = "/products/list",
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public RichMessage list(@RequestParam("token") String token,
+                                             @RequestParam("team_id") String teamId,
+                                             @RequestParam("team_domain") String teamDomain,
+                                             @RequestParam("channel_id") String channelId,
+                                             @RequestParam("channel_name") String channelName,
+                                             @RequestParam("user_id") String userId,
+                                             @RequestParam("user_name") String userName,
+                                             @RequestParam("command") String command,
+                                             @RequestParam("text") String text,
+                                             @RequestParam("response_url") String responseUrl) {
+        if (!token.equals(slackToken)) {
+            return new RichMessage("Sorry! You're not lucky enough to use our slack command.");
+        }
+
+        List<Product> products = productRepository.findAll();
+
+        StringBuilder messageProducts = new StringBuilder();
+
+        products.forEach(product -> messageProducts.append(product.toString()));
+
+        RichMessage richMessage = new RichMessage(messageProducts.toString());
+        richMessage.setResponseType("in_channel");
+
+        if (logger.isDebugEnabled()) {
+            try {
+                logger.debug("Reply (RichMessage): {}", new ObjectMapper().writeValueAsString(richMessage));
+            } catch (JsonProcessingException e) {
+                logger.debug("Error parsing RichMessage: ", e);
+            }
+        }
+
         return richMessage.encodedMessage();
     }
 }
