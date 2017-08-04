@@ -2,8 +2,9 @@ package com.moip.hackday;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.moip.hackday.domain.ProductExtrator;
 import com.moip.hackday.domain.entity.Product;
-import com.moip.hackday.domain.service.ProductService;
+import com.moip.hackday.domain.repository.ProductRepository;
 import me.ramswaroop.jbot.core.slack.models.RichMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,32 +16,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Sample Slash Command Handler.
- *
- * @author ramswaroop
- * @version 1.0.0, 20/06/2016
- */
 @RestController
 public class SlackSlashCommand {
 
     private static final Logger logger = LoggerFactory.getLogger(SlackSlashCommand.class);
 
-    /**
-     * The token you get while creating a new Slash Command. You
-     * should paste the token in application.properties file.
-     */
     @Value("${slashCommandToken}")
     private String slackToken;
 
     @Autowired
-    private ProductService productService;
+    private ProductRepository productRepository;
 
-    /**
-     * Slash Command handler. When a user types for example "/app help"
-     * then slack sends a POST request to this endpoint. So, this endpoint
-     * should match the url you set while creating the Slack Slash Command.
-     */
     @RequestMapping(value = "/products",
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -58,13 +44,15 @@ public class SlackSlashCommand {
             return new RichMessage("Sorry! You're not lucky enough to use our slack command.");
         }
 
-        String[] textTokens = text.split(" por ");
-        String name = textTokens[0];
-        String price = textTokens[1].split(" ")[0];
-        String url = textTokens[1].split(" ")[1];
+        ProductExtrator extrator = new ProductExtrator(text);
 
-        Product product = new Product().setName(name).setPrice(price).setSellerName(userName).setUrl(url);
-        product = productService.create(product);
+        Product product = new Product()
+                .setSellerName(userName)
+                .setName(extrator.getName())
+                .setPrice(extrator.getPrice())
+                .setUrl(extrator.getUrl());
+
+        product = productRepository.save(product);
 
         RichMessage richMessage = new RichMessage("Product offered for sale!: " + product.toString());
         richMessage.setResponseType("in_channel");
