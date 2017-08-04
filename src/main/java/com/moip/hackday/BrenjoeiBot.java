@@ -96,8 +96,9 @@ public class BrenjoeiBot extends Bot {
         if (!event.getText().equalsIgnoreCase("não")) {
             product.setUrl(event.getText().replace("<","").replace(">",""));
         }
-
-        productRepository.save(product);
+        String username = BrenjoeiUtil.getUsername(event.getUserId(), slackToken);
+        logger.info("Username: " + username);
+        productRepository.save(product.setSellerName(username));
         PRODUCTS.remove(event.getUserId());
         reply(session, event, new Message("Anuncio criado com sucesso"));
         stopConversation(event);
@@ -111,8 +112,6 @@ public class BrenjoeiBot extends Bot {
         logger.info("Event userid:" + event.getUserId());
         logger.info("Products size: " + PRODUCTS.size());
         logger.info("User null: " + (event.getUser() == null));
-        String username = BrenjoeiUtil.getUsername(event.getUserId(), slackToken);
-        logger.info("Username: " + username);
-        return (PRODUCTS.containsKey(username) ? PRODUCTS.get(username) : new Product().setSellerName(username));
+        return (PRODUCTS.containsKey(event.getUserId()) ? PRODUCTS.get(event.getUserId()) : new Product());
     }
 }
