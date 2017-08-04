@@ -55,7 +55,7 @@ public class SlackSlashCommand {
         product = productRepository.save(product);
 
         RichMessage richMessage = new RichMessage("Product " + product.getName() + " offered for sale!");
-        richMessage.setResponseType("in_channel");
+        richMessage.setResponseType("ephemeral");
         
         if (logger.isDebugEnabled()) {
             try {
@@ -92,7 +92,7 @@ public class SlackSlashCommand {
 
         RichMessage richMessage = new RichMessage("Encontrei algumas ofertas interessantes :)");
         richMessage.setAttachments(att);
-        richMessage.setResponseType("in_channel");
+        richMessage.setResponseType("ephemeral");
 
         if (att.length  < 1) {
             richMessage.setText("Não encontrei nenhuma oferta interessante :(");
@@ -130,7 +130,7 @@ public class SlackSlashCommand {
         productRepository.deleteAll();
 
         RichMessage richMessage = new RichMessage("Cleaned up!");
-        richMessage.setResponseType("in_channel");
+        richMessage.setResponseType("ephemeral");
 
         if (logger.isDebugEnabled()) {
             try {
@@ -151,7 +151,7 @@ public class SlackSlashCommand {
         logger.info(body);
 
         RichMessage richMessage = new RichMessage("Qq coisa");
-        richMessage.setResponseType("in_channel");
+        richMessage.setResponseType("ephemeral");
 
         if (logger.isDebugEnabled()) {
             try {

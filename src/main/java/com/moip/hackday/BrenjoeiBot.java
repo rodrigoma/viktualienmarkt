@@ -2,6 +2,7 @@ package com.moip.hackday;
 
 import com.moip.hackday.domain.entity.Product;
 import com.moip.hackday.domain.repository.ProductRepository;
+import com.moip.hackday.util.StringUtil;
 import me.ramswaroop.jbot.core.slack.Bot;
 import me.ramswaroop.jbot.core.slack.Controller;
 import me.ramswaroop.jbot.core.slack.models.Event;
@@ -61,7 +62,7 @@ public class BrenjoeiBot extends Bot {
         String productName = event.getText();
 
         if (isVava(productName)) {
-            reply(session, event, new Message("Valor de fofura inestimável! S2"));
+            reply(session, event, new Message("Nãããããoooo!!! Valor de fofura INESTIMÁTVEL! :heart_eyes:"));
             stopConversation(event);
             return;
         }
@@ -71,8 +72,9 @@ public class BrenjoeiBot extends Bot {
         nextConversation(event);
     }
 
-    private boolean isVava(String productName) {
-        return "vava".equals(productName.toLowerCase().replace(" ", ""));
+    private boolean isVava(final String productName) {
+        String name = StringUtil.removeSpecialCharacters(productName);
+        return "vava".equals(name.toLowerCase().replace(" ", ""));
     }
 
     @Controller(next = "productImage", events = {DIRECT_MESSAGE})
