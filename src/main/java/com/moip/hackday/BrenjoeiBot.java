@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.text.Normalizer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -93,19 +92,20 @@ public class BrenjoeiBot extends Bot {
         logger.info("User null: " + (event.getUser() == null));
         Product product = getProduct(event);
 
+        String username = BrenjoeiUtil.getUsername(event.getUserId(), slackToken);
+        logger.info("Username: " + username);
+
+        product.setSellerName(username);
+
         if (!event.getText().equalsIgnoreCase("não")) {
             product.setUrl(event.getText().replace("<","").replace(">",""));
         }
-        String username = BrenjoeiUtil.getUsername(event.getUserId(), slackToken);
-        logger.info("Username: " + username);
-        productRepository.save(product.setSellerName(username));
+
+        productRepository.save(product);
         PRODUCTS.remove(event.getUserId());
+
         reply(session, event, new Message("Anuncio criado com sucesso"));
         stopConversation(event);
-    }
-
-    public static String removeSpecialCharacters(String str) {
-        return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
     }
 
     private Product getProduct(Event event) {
