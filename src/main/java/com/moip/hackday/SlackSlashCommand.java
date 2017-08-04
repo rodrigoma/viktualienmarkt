@@ -11,10 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -89,7 +86,7 @@ public class SlackSlashCommand {
         }
 
         List<Product> products = productRepository.findByNameLike(text);
-        List<ButtonAttachment> attachments = products.stream().map(p -> p.toAttachment(userId)).collect(Collectors.toList());
+        List<ButtonAttachment> attachments = products.stream().map(p -> p.toAttachment(userId, userName)).collect(Collectors.toList());
         ButtonAttachment[] att = new ButtonAttachment[attachments.size()];
         att = attachments.toArray(att);
 
@@ -133,6 +130,34 @@ public class SlackSlashCommand {
         productRepository.deleteAll();
 
         RichMessage richMessage = new RichMessage("Cleaned up!");
+        richMessage.setResponseType("in_channel");
+
+        if (logger.isDebugEnabled()) {
+            try {
+                logger.debug("Reply (RichMessage): {}", new ObjectMapper().writeValueAsString(richMessage));
+            } catch (JsonProcessingException e) {
+                logger.debug("Error parsing RichMessage: ", e);
+            }
+        }
+
+        return richMessage.encodedMessage();
+    }
+
+    @RequestMapping(value = "/products/action",
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public RichMessage action(@RequestParam("token") String token,
+                              @RequestBody String body) {
+
+        if (!token.equals(slackToken)) {
+            return new RichMessage("Sorry! You're not lucky enough to use our slack command.");
+        }
+
+
+
+        logger.info(body);
+
+        RichMessage richMessage = new RichMessage("Qq coisa");
         richMessage.setResponseType("in_channel");
 
         if (logger.isDebugEnabled()) {
