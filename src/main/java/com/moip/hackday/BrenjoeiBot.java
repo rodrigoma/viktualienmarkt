@@ -72,7 +72,7 @@ public class BrenjoeiBot extends Bot {
         nextConversation(event);
     }
 
-    @Controller(next = "confirm", events = {DIRECT_MESSAGE})
+    @Controller(events = {DIRECT_MESSAGE})
     public void productImage(WebSocketSession session, Event event) {
         logger.info("Adicionar imagem " + products.size());
         logger.info("User null: " + (event.getUser() == null));
