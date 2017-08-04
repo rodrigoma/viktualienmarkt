@@ -40,18 +40,6 @@ public class SlackSlashCommand {
      * Slash Command handler. When a user types for example "/app help"
      * then slack sends a POST request to this endpoint. So, this endpoint
      * should match the url you set while creating the Slack Slash Command.
-     *
-     * @param token
-     * @param teamId
-     * @param teamDomain
-     * @param channelId
-     * @param channelName
-     * @param userId
-     * @param userName
-     * @param command
-     * @param text
-     * @param responseUrl
-     * @return
      */
     @RequestMapping(value = "/products",
             method = RequestMethod.POST,
