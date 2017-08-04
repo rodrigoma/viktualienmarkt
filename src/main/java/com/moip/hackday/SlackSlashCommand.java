@@ -86,7 +86,7 @@ public class SlackSlashCommand {
         }
 
         List<Product> products = productRepository.findByNameLike(text);
-        List<ButtonAttachment> attachments = products.stream().map(p -> p.toAttachment(userId)).collect(Collectors.toList());
+        List<ButtonAttachment> attachments = products.stream().map(p -> p.toAttachment(userId, userName)).collect(Collectors.toList());
         ButtonAttachment[] att = new ButtonAttachment[attachments.size()];
         att = attachments.toArray(att);
 
@@ -152,6 +152,8 @@ public class SlackSlashCommand {
         if (!token.equals(slackToken)) {
             return new RichMessage("Sorry! You're not lucky enough to use our slack command.");
         }
+
+
 
         logger.info(body);
 

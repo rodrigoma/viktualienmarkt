@@ -70,7 +70,7 @@ public class Product {
         return getName() + " " + getPrice() + " offered by " + getSellerName() + "\n" + getUrl() + "\n \n";
     }
 
-    public ButtonAttachment toAttachment(String userId) {
+    public ButtonAttachment toAttachment(String userId, String userName) {
         ButtonAttachment attachment = new ButtonAttachment();
         attachment.setColor("8B008B");
 
@@ -80,7 +80,7 @@ public class Product {
         attachment.setAuthorName("@" + getSellerName());
         attachment.setAuthorLink("https://moip.slack.com/team/" + getSellerName());
 
-        if (getSellerName().equals(userId)) {
+        if (getSellerName().equals(userId) || getSellerName().equals(userName)) {
             Action sold = new Action();
 
             sold.setName("sold");
