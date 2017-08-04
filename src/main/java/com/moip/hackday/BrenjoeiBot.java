@@ -1,14 +1,11 @@
 package com.moip.hackday;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moip.hackday.domain.entity.Product;
 import com.moip.hackday.domain.repository.ProductRepository;
 import me.ramswaroop.jbot.core.slack.Bot;
 import me.ramswaroop.jbot.core.slack.Controller;
 import me.ramswaroop.jbot.core.slack.models.Event;
 import me.ramswaroop.jbot.core.slack.models.Message;
-import me.ramswaroop.jbot.core.slack.models.RichMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +47,7 @@ public class BrenjoeiBot extends Bot {
     @Controller(pattern = "(quero vender)", next = "productName", events = {DIRECT_MESSAGE})
     public void sellProduct(WebSocketSession session, Event event) {
         logger.info("Quero vender " + PRODUCTS.size());
+        logger.info("Event type: " + event.getType());
         logger.info("User null: " + (event.getUser() == null));
         startConversation(event, "productName");
         Product product = getProduct(event);
@@ -60,6 +58,7 @@ public class BrenjoeiBot extends Bot {
     @Controller(next = "productPrice", events = {DIRECT_MESSAGE})
     public void productName(WebSocketSession session, Event event) {
         logger.info("Nome do produto " + PRODUCTS.size());
+        logger.info("Event type: " + event.getType());
         logger.info("User null: " + (event.getUser() == null));
         getProduct(event).setName(event.getText());
         reply(session, event, new Message("Por quanto você quer vender?"));
@@ -69,19 +68,21 @@ public class BrenjoeiBot extends Bot {
     @Controller(next = "productImage", events = {DIRECT_MESSAGE})
     public void productPrice(WebSocketSession session, Event event) {
         logger.info("Qual o preço " + PRODUCTS.size());
+        logger.info("Event type: " + event.getType());
         logger.info("User null: " + (event.getUser() == null));
         getProduct(event).setPrice(event.getText());
-        reply(session, event, new Message("Quer mandar uma imagem? Se sim, me manda a URL aqui"));
+        reply(session, event, new Message("Quer mandar uma imagem? Me envie a URL, ou responda NÃO/NOPE/NEM."));
         nextConversation(event);
     }
 
     @Controller(events = {DIRECT_MESSAGE})
     public void productImage(WebSocketSession session, Event event) {
         logger.info("Adicionar imagem " + PRODUCTS.size());
+        logger.info("Event type: " + event.getType());
         logger.info("User null: " + (event.getUser() == null));
         Product product = getProduct(event);
 
-        if (!event.getText().equalsIgnoreCase("não")) {
+        if (isNegativeAnswer(event.getText())) {
             product.setUrl(event.getText().replace("<","").replace(">",""));
         }
         productRepository.save(product);
@@ -90,18 +91,16 @@ public class BrenjoeiBot extends Bot {
         stopConversation(event);
     }
 
-    private boolean isPositiveAnswer(String answer){
-        List<String> positives = new ArrayList<>();
-        positives.add("sim");
-        positives.add("aham");
-        positives.add("bora");
-        positives.add("vamo");
-        positives.add("fechou");
+    private boolean isNegativeAnswer(String answer){
+        List<String> negatives = new ArrayList();
+        negatives.add("nao");
+        negatives.add("nope");
+        negatives.add("nem");
 
         String normalizedAnswer = removeSpecialCharacters(answer.toLowerCase());
 
-        for (String positive : positives){
-            if (normalizedAnswer.contains(positive)) return true;
+        for (String negative : negatives){
+            if (normalizedAnswer.contains(negative)) return true;
         }
 
         return false;
@@ -111,23 +110,11 @@ public class BrenjoeiBot extends Bot {
         return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
     }
 
-//    @Controller(events = {DIRECT_MESSAGE})
-//    public void confirm(WebSocketSession session, Event event) {
-//        logger.info("Confirmar " + products.size());
-//        logger.info("User null: " + (event.getUser() == null));
-//        reply(session, event, getProduct(event).toRichMessage());
-//        stopConversation(event);
-//    }
-
     private Product getProduct(Event event) {
         logger.info("Event userid:" + event.getUserId());
         logger.info("Products size: " + PRODUCTS.size());
         logger.info("User null: " + (event.getUser() == null));
         String username = BrenjoeiUtil.getUsername(event.getUserId(), slackToken);
         return (PRODUCTS.containsKey(username) ? PRODUCTS.get(username) : new Product().setSellerName(username));
-    }
-
-    private String toJSONString(RichMessage richMessage) throws JsonProcessingException {
-        return new ObjectMapper().writeValueAsString(richMessage);
     }
 }
