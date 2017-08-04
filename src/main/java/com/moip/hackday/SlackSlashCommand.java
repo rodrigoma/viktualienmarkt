@@ -54,7 +54,7 @@ public class SlackSlashCommand {
 
         product = productRepository.save(product);
 
-        RichMessage richMessage = new RichMessage("Product offered for sale!: " + product.toString());
+        RichMessage richMessage = new RichMessage("Product " + product.getName() + " offered for sale!");
         richMessage.setResponseType("in_channel");
         
         if (logger.isDebugEnabled()) {

@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bbe292b4-c7eb-4a8a-b5f0-9cf7319e9364" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/com/moip/hackday/domain/service/ProductService.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/moip/hackday/SlackSlashCommand.java" afterPath="$PROJECT_DIR$/src/main/java/com/moip/hackday/SlackSlashCommand.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/moip/hackday/domain/entity/Product.java" afterPath="$PROJECT_DIR$/src/main/java/com/moip/hackday/domain/entity/Product.java" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -61,11 +59,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SlackSlashCommand.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="SlackSlashCommand.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/moip/hackday/SlackSlashCommand.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="64" column="13" lean-forward="true" selection-start-line="64" selection-start-column="13" selection-end-line="64" selection-end-column="13" />
+            <state relative-caret-position="255">
+              <caret line="56" column="74" lean-forward="false" selection-start-line="56" selection-start-column="74" selection-end-line="56" selection-end-column="74" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -92,16 +90,17 @@
       <file leaf-file-name="Product.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/moip/hackday/domain/entity/Product.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="750">
-              <caret line="58" column="35" lean-forward="false" selection-start-line="58" selection-start-column="35" selection-end-line="58" selection-end-column="35" />
+            <state relative-caret-position="180">
+              <caret line="63" column="18" lean-forward="false" selection-start-line="63" selection-start-column="18" selection-end-line="63" selection-end-column="18" />
               <folding>
+                <element signature="e#1013#1014#0" expanded="true" />
                 <element signature="e#1046#1047#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ProductExtratorTest.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ProductExtratorTest.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/com/moip/hackday/domain/ProductExtratorTest.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="180">
@@ -149,15 +148,15 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/main/java/com/moip/hackday/domain/repository/ProductRepository.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/moip/hackday/domain/entity/Product.java" />
         <option value="$PROJECT_DIR$/src/main/resources/application.properties" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/test/java/MessageExtratorTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/moip/hackday/domain/service/ProductService.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/moip/hackday/SlackSlashCommand.java" />
         <option value="$PROJECT_DIR$/src/test/java/ProductExtratorTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/moip/hackday/domain/ProductExtrator.java" />
         <option value="$PROJECT_DIR$/src/test/java/com/moip/hackday/domain/ProductExtratorTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/moip/hackday/domain/entity/Product.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/moip/hackday/SlackSlashCommand.java" />
       </list>
     </option>
   </component>
@@ -951,16 +950,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/moip/hackday/domain/entity/Product.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="750">
-          <caret line="58" column="35" lean-forward="false" selection-start-line="58" selection-start-column="35" selection-end-line="58" selection-end-column="35" />
-          <folding>
-            <element signature="e#1046#1047#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/moip/hackday/domain/ProductExtrator.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="330">
@@ -975,20 +964,31 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/moip/hackday/SlackSlashCommand.java">
+    <entry file="file://$PROJECT_DIR$/src/test/java/com/moip/hackday/domain/ProductExtratorTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="64" column="13" lean-forward="true" selection-start-line="64" selection-start-column="13" selection-end-line="64" selection-end-column="13" />
+        <state relative-caret-position="180">
+          <caret line="26" column="37" lean-forward="false" selection-start-line="26" selection-start-column="37" selection-end-line="26" selection-end-column="37" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/com/moip/hackday/domain/ProductExtratorTest.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/moip/hackday/domain/entity/Product.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
-          <caret line="26" column="37" lean-forward="false" selection-start-line="26" selection-start-column="37" selection-end-line="26" selection-end-column="37" />
+          <caret line="63" column="18" lean-forward="false" selection-start-line="63" selection-start-column="18" selection-end-line="63" selection-end-column="18" />
+          <folding>
+            <element signature="e#1013#1014#0" expanded="true" />
+            <element signature="e#1046#1047#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/moip/hackday/SlackSlashCommand.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="56" column="74" lean-forward="false" selection-start-line="56" selection-start-column="74" selection-end-line="56" selection-end-column="74" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
