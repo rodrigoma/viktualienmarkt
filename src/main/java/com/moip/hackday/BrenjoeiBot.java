@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moip.hackday.domain.entity.Product;
 import me.ramswaroop.jbot.core.slack.Bot;
 import me.ramswaroop.jbot.core.slack.Controller;
+import me.ramswaroop.jbot.core.slack.EventType;
 import me.ramswaroop.jbot.core.slack.models.Event;
 import me.ramswaroop.jbot.core.slack.models.Message;
 import me.ramswaroop.jbot.core.slack.models.RichMessage;
@@ -39,7 +40,7 @@ public class BrenjoeiBot extends Bot {
         return this;
     }
 
-    @Controller(pattern = "(quero vender)", next = "nomeDoProduto")
+    @Controller(pattern = "(quero vender)", next = "nomeDoProduto", events = {EventType.DIRECT_MESSAGE})
     public void queroVender(WebSocketSession session, Event event) {
         logger.info("Quero vender " + products.size());
         startConversation(event, "nomeDoProduto");
@@ -48,7 +49,7 @@ public class BrenjoeiBot extends Bot {
         reply(session, event, new Message("O que você quer vender?"));
     }
 
-    @Controller(next = "qualOPreco")
+    @Controller(next = "qualOPreco", events = {EventType.DIRECT_MESSAGE})
     public void nomeDoProduto(WebSocketSession session, Event event) {
         logger.info("nome do produto " + products.size());
         getProduct(event).setName(event.getText());
@@ -56,7 +57,7 @@ public class BrenjoeiBot extends Bot {
         nextConversation(event);
     }
 
-    @Controller(next = "adicionarImagem")
+    @Controller(next = "adicionarImagem", events = {EventType.DIRECT_MESSAGE})
     public void qualOPreco(WebSocketSession session, Event event) {
         logger.info("qual o preco " + products.size());
         getProduct(event).setPrice(event.getText());
@@ -64,7 +65,7 @@ public class BrenjoeiBot extends Bot {
         nextConversation(event);
     }
 
-    @Controller(next = "confirmar")
+    @Controller(next = "confirmar", events = {EventType.DIRECT_MESSAGE})
     public void adicionarImagem(WebSocketSession session, Event event) {
         logger.info("adicionar imagem " + products.size());
         if (!event.getText().equalsIgnoreCase("não")) {
@@ -74,7 +75,7 @@ public class BrenjoeiBot extends Bot {
         nextConversation(event);
     }
 
-    @Controller
+    @Controller(events = {EventType.DIRECT_MESSAGE})
     public void confirmar(WebSocketSession session, Event event) {
         logger.info("confirmar " + products.size());
         reply(session, event, getProduct(event).toRichMessage());
