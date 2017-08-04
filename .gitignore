@@ -31,3 +31,4 @@ infinitest.filters
 *.jar
 *.war
 *.ear
+/.idea/
