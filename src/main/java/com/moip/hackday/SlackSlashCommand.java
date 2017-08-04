@@ -89,7 +89,7 @@ public class SlackSlashCommand {
         }
 
         List<Product> products = productRepository.findByNameLike(text);
-        List<ButtonAttachment> attachments = products.stream().map(p -> p.toAttachment()).collect(Collectors.toList());
+        List<ButtonAttachment> attachments = products.stream().map(p -> p.toAttachment(userId)).collect(Collectors.toList());
         ButtonAttachment[] att = new ButtonAttachment[attachments.size()];
         att = attachments.toArray(att);
 
