@@ -26,7 +26,7 @@ public class BrenjoeiBot extends Bot {
 
     private static final Logger logger = LoggerFactory.getLogger(BrenjoeiBot.class);
 
-    private Map<String, Product> products = new HashMap<String, Product>();
+    private final static Map<String, Product> PRODUCTS = new HashMap();
 
     @Autowired
     private ProductRepository productRepository;
@@ -46,17 +46,17 @@ public class BrenjoeiBot extends Bot {
 
     @Controller(pattern = "(quero vender)", next = "productName", events = {DIRECT_MESSAGE})
     public void sellProduct(WebSocketSession session, Event event) {
-        logger.info("Quero vender " + products.size());
+        logger.info("Quero vender " + PRODUCTS.size());
         logger.info("User null: " + (event.getUser() == null));
         startConversation(event, "productName");
         Product product = getProduct(event);
-        products.put(event.getUserId(), product);
+        PRODUCTS.put(event.getUserId(), product);
         reply(session, event, new Message("O que você quer vender?"));
     }
 
     @Controller(next = "productPrice", events = {DIRECT_MESSAGE})
     public void productName(WebSocketSession session, Event event) {
-        logger.info("Nome do produto " + products.size());
+        logger.info("Nome do produto " + PRODUCTS.size());
         logger.info("User null: " + (event.getUser() == null));
         getProduct(event).setName(event.getText());
         reply(session, event, new Message("Por quanto você quer vender?"));
@@ -65,7 +65,7 @@ public class BrenjoeiBot extends Bot {
 
     @Controller(next = "productImage", events = {DIRECT_MESSAGE})
     public void productPrice(WebSocketSession session, Event event) {
-        logger.info("Qual o preço " + products.size());
+        logger.info("Qual o preço " + PRODUCTS.size());
         logger.info("User null: " + (event.getUser() == null));
         getProduct(event).setPrice(event.getText());
         reply(session, event, new Message("Adicione uma url da imagem: (Digite NÃO para não adicionar)"));
@@ -74,30 +74,23 @@ public class BrenjoeiBot extends Bot {
 
     @Controller(events = {DIRECT_MESSAGE})
     public void productImage(WebSocketSession session, Event event) {
-        logger.info("Adicionar imagem " + products.size());
+        logger.info("Adicionar imagem " + PRODUCTS.size());
         logger.info("User null: " + (event.getUser() == null));
         Product product = getProduct(event);
         if (!event.getText().equalsIgnoreCase("não")) {
-            product.setUrl(event.getText());
+            product.setUrl(event.getText().replace("<","").replace(">",""));
         }
         productRepository.save(product);
+        PRODUCTS.remove(event.getUserId());
         reply(session, event, new Message("Anuncio criado com sucesso"));
         stopConversation(event);
     }
 
-//    @Controller(events = {DIRECT_MESSAGE})
-//    public void confirm(WebSocketSession session, Event event) {
-//        logger.info("Confirmar " + products.size());
-//        logger.info("User null: " + (event.getUser() == null));
-//        reply(session, event, getProduct(event).toRichMessage());
-//        stopConversation(event);
-//    }
-
     private Product getProduct(Event event) {
         logger.info("Event userid:" + event.getUserId());
-        logger.info("Products size: " + products.size());
+        logger.info("Products size: " + PRODUCTS.size());
         logger.info("User null: " + (event.getUser() == null));
-        return (products.containsKey(event.getUserId()) ? products.get(event.getUserId()) : new Product().setSellerName(event.getUserId()));
+        return (PRODUCTS.containsKey(event.getUserId()) ? PRODUCTS.get(event.getUserId()) : new Product().setSellerName(event.getUserId()));
     }
 
     private String toJSONString(RichMessage richMessage) throws JsonProcessingException {
