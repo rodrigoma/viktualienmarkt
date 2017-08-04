@@ -40,37 +40,37 @@ public class BrenjoeiBot extends Bot {
         return this;
     }
 
-    @Controller(pattern = "(quero vender)", next = "nomeDoProduto", events = {EventType.DIRECT_MESSAGE})
-    public void queroVender(WebSocketSession session, Event event) {
+    @Controller(pattern = "(quero vender)", next = "productName", events = {EventType.DIRECT_MESSAGE})
+    public void sellProduct(WebSocketSession session, Event event) {
         logger.info("Quero vender " + products.size());
         logger.info("User null: " + (event.getUser() == null));
-        startConversation(event, "nomeDoProduto");
+        startConversation(event, "productName");
         Product product = getProduct(event);
         products.put(event.getUserId(), product);
         reply(session, event, new Message("O que você quer vender?"));
     }
 
-    @Controller(next = "qualOPreco", events = {EventType.DIRECT_MESSAGE})
-    public void nomeDoProduto(WebSocketSession session, Event event) {
-        logger.info("nome do produto " + products.size());
+    @Controller(next = "productPrice", events = {EventType.DIRECT_MESSAGE})
+    public void productName(WebSocketSession session, Event event) {
+        logger.info("Nome do produto " + products.size());
         logger.info("User null: " + (event.getUser() == null));
         getProduct(event).setName(event.getText());
         reply(session, event, new Message("Por quanto você quer vender?"));
         nextConversation(event);
     }
 
-    @Controller(next = "adicionarImagem", events = {EventType.DIRECT_MESSAGE})
-    public void qualOPreco(WebSocketSession session, Event event) {
-        logger.info("qual o preco " + products.size());
+    @Controller(next = "productImage", events = {EventType.DIRECT_MESSAGE})
+    public void productPrice(WebSocketSession session, Event event) {
+        logger.info("Qual o preço " + products.size());
         logger.info("User null: " + (event.getUser() == null));
         getProduct(event).setPrice(event.getText());
-        reply(session, event, new Message("Adicione uma url da imagem: (Digite não para não adicionar)"));
+        reply(session, event, new Message("Adicione uma url da imagem: (Digite NÃO para não adicionar)"));
         nextConversation(event);
     }
 
-    @Controller(next = "confirmar", events = {EventType.DIRECT_MESSAGE})
-    public void adicionarImagem(WebSocketSession session, Event event) {
-        logger.info("adicionar imagem " + products.size());
+    @Controller(next = "confirm", events = {EventType.DIRECT_MESSAGE})
+    public void productImage(WebSocketSession session, Event event) {
+        logger.info("Adicionar imagem " + products.size());
         logger.info("User null: " + (event.getUser() == null));
         if (!event.getText().equalsIgnoreCase("não")) {
             getProduct(event).setUrl(event.getText());
@@ -80,8 +80,8 @@ public class BrenjoeiBot extends Bot {
     }
 
     @Controller(events = {EventType.DIRECT_MESSAGE})
-    public void confirmar(WebSocketSession session, Event event) {
-        logger.info("confirmar " + products.size());
+    public void confirm(WebSocketSession session, Event event) {
+        logger.info("Confirmar " + products.size());
         logger.info("User null: " + (event.getUser() == null));
         reply(session, event, getProduct(event).toRichMessage());
         stopConversation(event);
