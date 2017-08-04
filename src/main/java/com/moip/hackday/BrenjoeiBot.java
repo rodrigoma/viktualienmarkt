@@ -123,7 +123,8 @@ public class BrenjoeiBot extends Bot {
         logger.info("Event userid:" + event.getUserId());
         logger.info("Products size: " + PRODUCTS.size());
         logger.info("User null: " + (event.getUser() == null));
-        return (PRODUCTS.containsKey(event.getUserId()) ? PRODUCTS.get(event.getUserId()) : new Product().setSellerName(event.getUserId()));
+        String username = BrenjoeiUtil.getUsername(event.getUserId(), slackToken);
+        return (PRODUCTS.containsKey(username) ? PRODUCTS.get(username) : new Product().setSellerName(username));
     }
 
     private String toJSONString(RichMessage richMessage) throws JsonProcessingException {
