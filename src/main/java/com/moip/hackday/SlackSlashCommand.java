@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moip.hackday.domain.ProductExtrator;
 import com.moip.hackday.domain.entity.Product;
 import com.moip.hackday.domain.repository.ProductRepository;
-import me.ramswaroop.jbot.core.slack.models.Attachment;
 import me.ramswaroop.jbot.core.slack.models.RichMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -91,13 +89,17 @@ public class SlackSlashCommand {
         }
 
         List<Product> products = productRepository.findByNameLike(text);
-        List<Attachment> attachments = products.stream().map(p -> p.toAttachment()).collect(Collectors.toList());
-        Attachment[] att = new Attachment[attachments.size()];
+        List<ButtonAttachment> attachments = products.stream().map(p -> p.toAttachment()).collect(Collectors.toList());
+        ButtonAttachment[] att = new ButtonAttachment[attachments.size()];
         att = attachments.toArray(att);
 
         RichMessage richMessage = new RichMessage("Encontrei algumas ofertas interessantes :)");
         richMessage.setAttachments(att);
         richMessage.setResponseType("in_channel");
+
+        if (att.length  < 1) {
+            richMessage.setText("Não encontrei nenhuma oferta interessante :(");
+        }
 
         if (logger.isDebugEnabled()) {
             try {

@@ -70,8 +70,8 @@ public class Product {
         return getName() + " " + getPrice() + " offered by " + getSellerName() + "\n" + getUrl() + "\n \n";
     }
 
-    public Attachment toAttachment() {
-        Attachment attachment = new Attachment();
+    public ButtonAttachment toAttachment() {
+        ButtonAttachment attachment = new ButtonAttachment();
         attachment.setColor("8B008B");
 
         attachment.setTitle(name);
@@ -79,6 +79,17 @@ public class Product {
 
         attachment.setAuthorName("@" + getSellerName());
         attachment.setAuthorLink("https://moip.slack.com/team/" + getSellerName());
+
+        Action sold = new Action();
+
+        sold.setName("sold");
+        sold.setText("Vendido");
+        sold.setType("button");
+        sold.setStyle("good");
+        sold.setValue("sold");
+
+        attachment.setActions(new Action[1]);
+        attachment.getActions()[1] = sold;
 
         if (!getUrl().isEmpty()) {
             attachment.setThumbUrl(getUrl());
