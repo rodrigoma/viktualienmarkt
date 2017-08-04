@@ -69,7 +69,7 @@ public class SlackSlashCommand {
 
         /** build response */
         RichMessage richMessage = new RichMessage("The is Slash Commander!");
-        richMessage.setResponseType("in_channel");
+        richMessage.setResponseType("in_channel"); //ephemeral
         // set attachments
         Attachment[] attachments = new Attachment[1];
         attachments[0] = new Attachment();
