@@ -95,7 +95,7 @@ public class SlackSlashCommand {
         Attachment[] att = new Attachment[attachments.size()];
         att = attachments.toArray(att);
 
-        RichMessage richMessage = new RichMessage("Produtos encontrados");
+        RichMessage richMessage = new RichMessage("Encontrei algumas ofertas interessantes :)");
         richMessage.setAttachments(att);
         richMessage.setResponseType("in_channel");
 
