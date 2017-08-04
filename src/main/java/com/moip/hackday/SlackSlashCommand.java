@@ -145,15 +145,8 @@ public class SlackSlashCommand {
 
     @RequestMapping(value = "/products/action",
             method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public RichMessage action(@RequestParam("token") String token,
-                              @RequestBody String body) {
-
-        if (!token.equals(slackToken)) {
-            return new RichMessage("Sorry! You're not lucky enough to use our slack command.");
-        }
-
-
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public RichMessage action(@RequestBody String body) {
 
         logger.info(body);
 
