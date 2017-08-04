@@ -30,7 +30,6 @@ public class ProductExtrator {
             new URL(url);
             return url.trim();
         } catch (MalformedURLException ex) {
-            ex.printStackTrace();
             return "";
         }
     }
