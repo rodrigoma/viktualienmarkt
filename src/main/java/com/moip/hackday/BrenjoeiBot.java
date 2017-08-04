@@ -60,9 +60,22 @@ public class BrenjoeiBot extends Bot {
         logger.info("Nome do produto " + PRODUCTS.size());
         logger.info("Event type: " + event.getType());
         logger.info("User null: " + (event.getUser() == null));
-        getProduct(event).setName(event.getText());
+
+        String productName = event.getText();
+
+        if (isVava(productName)) {
+            reply(session, event, new Message("Valor de fofura inestimável! S2"));
+            stopConversation(event);
+            return;
+        }
+
+        getProduct(event).setName(productName);
         reply(session, event, new Message("Por quanto você quer vender?"));
         nextConversation(event);
+    }
+
+    private boolean isVava(String productName) {
+        return "vava".equals(productName.toLowerCase().replace(" ", ""));
     }
 
     @Controller(next = "productImage", events = {DIRECT_MESSAGE})
