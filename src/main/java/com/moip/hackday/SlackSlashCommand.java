@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moip.hackday.domain.ProductExtrator;
 import com.moip.hackday.domain.entity.Product;
 import com.moip.hackday.domain.repository.ProductRepository;
+import me.ramswaroop.jbot.core.slack.models.Attachment;
 import me.ramswaroop.jbot.core.slack.models.RichMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class SlackSlashCommand {
@@ -87,13 +90,13 @@ public class SlackSlashCommand {
             return new RichMessage("Sorry! You're not lucky enough to use our slack command.");
         }
 
-        List<Product> products = productRepository.findAll();
+        List<Product> products = productRepository.findByNameLike(text);
+        List<Attachment> attachments = products.stream().map(p -> p.toAttachment()).collect(Collectors.toList());
+        Attachment[] att = new Attachment[attachments.size()];
+        att = attachments.toArray(att);
 
-        StringBuilder messageProducts = new StringBuilder();
-
-        products.forEach(product -> messageProducts.append(product.toString()));
-
-        RichMessage richMessage = new RichMessage(messageProducts.toString());
+        RichMessage richMessage = new RichMessage("Produtos encontrados");
+        richMessage.setAttachments(att);
         richMessage.setResponseType("in_channel");
 
         if (logger.isDebugEnabled()) {

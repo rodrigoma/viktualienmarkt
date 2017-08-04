@@ -70,6 +70,19 @@ public class Product {
         return getName() + " " + getPrice() + " offered by " + getSellerName() + "\n" + getUrl() + "\n \n";
     }
 
+    public Attachment toAttachment() {
+        Attachment attachment = new Attachment();
+        attachment.setTitle(name);
+        attachment.setText("Estou vendendo '" + getName() + "' por: " + getPrice());
+        attachment.setAuthorName(getSellerName());
+
+        if (!getUrl().isEmpty()) {
+            attachment.setThumbUrl(getUrl());
+        }
+
+        return attachment;
+    }
+
     public RichMessage toRichMessage() {
         RichMessage richMessage = new RichMessage("Aqui está o produto:");
         Attachment productName = new Attachment();
