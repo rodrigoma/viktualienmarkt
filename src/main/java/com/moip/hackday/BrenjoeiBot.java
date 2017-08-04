@@ -81,7 +81,7 @@ public class BrenjoeiBot extends Bot {
         logger.info("User null: " + (event.getUser() == null));
         Product product = getProduct(event);
 
-        if (!event.getText().equalsIgnoreCase("não")) {
+        if (isNegativeAnswer(event.getText())) {
             product.setUrl(event.getText().replace("<","").replace(">",""));
         }
         productRepository.save(product);
@@ -90,18 +90,16 @@ public class BrenjoeiBot extends Bot {
         stopConversation(event);
     }
 
-    private boolean isPositiveAnswer(String answer){
-        List<String> positives = new ArrayList<>();
-        positives.add("sim");
-        positives.add("aham");
-        positives.add("bora");
-        positives.add("vamo");
-        positives.add("fechou");
+    private boolean isNegativeAnswer(String answer){
+        List<String> negatives = new ArrayList<>();
+        negatives.add("nao");
+        negatives.add("nope");
+        negatives.add("nem");
 
         String normalizedAnswer = removeSpecialCharacters(answer.toLowerCase());
 
-        for (String positive : positives){
-            if (normalizedAnswer.contains(positive)) return true;
+        for (String negative : negatives){
+            if (normalizedAnswer.contains(negative)) return true;
         }
 
         return false;
