@@ -101,6 +101,8 @@ public class BrenjoeiBot extends Bot {
         for (String positive : positives){
             if (normalizedAnswer.contains(positive)) return true;
         }
+
+        return false;
     }
 
     public static String removeSpecialCharacters(String str) {
