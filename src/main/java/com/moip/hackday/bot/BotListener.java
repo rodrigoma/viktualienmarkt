@@ -93,14 +93,15 @@ public class BotListener extends Bot {
 
         productRepository.save(product);
 
-        reply(session, event, new Message("Anuncio criado com sucesso"));
+        reply(session, event, new Message("Thanks! Offer was created successfully. " +
+                "You can use the slash commands to list all offers. Have a nice sell."));
 
         finnishConversation(event);
     }
 
     private Product getProduct(Event event) {
         if (!PRODUCTS.containsKey(event.getUserId())) {
-            return PRODUCTS.put(event.getUserId(), new Product());
+            PRODUCTS.put(event.getUserId(), new Product());
         }
 
         return PRODUCTS.get(event.getUserId());
