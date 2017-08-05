@@ -15,6 +15,7 @@ import org.springframework.web.socket.WebSocketSession;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.moip.hackday.util.SlackUtil.getUsername;
 import static com.moip.hackday.util.StringUtil.cleanUrl;
@@ -51,7 +52,7 @@ public class BotListener extends Bot {
 
         startConversation(event, "productName");
 
-        getProduct(event).setSellerName(getUsername(event.getUserId(), slackToken));
+        getProduct(event, true).get().setSellerName(getUsername(event.getUserId(), slackToken));
 
         reply(session, event, new Message("What do you want to sell?"));
     }
@@ -61,7 +62,13 @@ public class BotListener extends Bot {
         logger.info("Products in queue: {} ", PRODUCTS.size());
         logger.info("[2] productName(): {} ", toStr(event));
 
-        getProduct(event).setName(event.getText());
+        Optional<Product> product = getProduct(event, false);
+
+        if (!product.isPresent()) {
+            return;
+        }
+
+        product.get().setName(event.getText());
 
         reply(session, event, new Message("How much do you want to sell?"));
 
@@ -73,25 +80,35 @@ public class BotListener extends Bot {
         logger.info("Products in queue: {} ", PRODUCTS.size());
         logger.info("[3] productPrice(): {} ", toStr(event));
 
-        getProduct(event).setPrice(event.getText());
+        Optional<Product> product = getProduct(event, false);
+
+        if (!product.isPresent()) {
+            return;
+        }
+
+        product.get().setPrice(event.getText());
 
         reply(session, event, new Message("Give me the image URL, or just type NO to skip."));
 
         nextConversation(event);
     }
 
-    @Controller(events = {DIRECT_MESSAGE})
+    @Controller(pattern = "^(https?)", events = {DIRECT_MESSAGE})
     public void productImage(WebSocketSession session, Event event) {
         logger.info("Products in queue: {} ", PRODUCTS.size());
         logger.info("[4] productImage(): {} ", toStr(event));
 
-        Product product = getProduct(event);
+        Optional<Product> product = getProduct(event, false);
 
-        if (!event.getText().equalsIgnoreCase("no")) {
-            product.setUrl(cleanUrl(event.getText()));
+        if (!product.isPresent()) {
+            return;
         }
 
-        productRepository.save(product);
+        if (!event.getText().equalsIgnoreCase("no")) {
+            product.get().setUrl(cleanUrl(event.getText()));
+        }
+
+        productRepository.save(product.get());
 
         reply(session, event, new Message("Thanks! Offer was created successfully. " +
                 "You can use the slash commands to list all offers. Have a nice sell."));
@@ -109,12 +126,16 @@ public class BotListener extends Bot {
         finnishConversation(event);
     }
 
-    private Product getProduct(Event event) {
-        if (!PRODUCTS.containsKey(event.getUserId())) {
-            PRODUCTS.put(event.getUserId(), new Product());
+    private Optional<Product> getProduct(Event event, boolean createNew) {
+        if (PRODUCTS.containsKey(event.getUserId())) {
+            return Optional.of(PRODUCTS.get(event.getUserId()));
+        } else {
+            if (createNew) {
+                return Optional.of(PRODUCTS.put(event.getUserId(), new Product()));
+            }
         }
 
-        return PRODUCTS.get(event.getUserId());
+        return Optional.empty();
     }
 
     private void finnishConversation(Event event) {
