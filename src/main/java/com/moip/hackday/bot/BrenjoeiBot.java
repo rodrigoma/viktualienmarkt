@@ -1,5 +1,6 @@
-package com.moip.hackday;
+package com.moip.hackday.bot;
 
+import com.moip.hackday.util.BrenjoeiUtil;
 import com.moip.hackday.domain.entity.Product;
 import com.moip.hackday.domain.repository.ProductRepository;
 import com.moip.hackday.util.StringUtil;

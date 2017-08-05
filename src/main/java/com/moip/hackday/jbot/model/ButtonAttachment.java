@@ -1,4 +1,4 @@
-package com.moip.hackday;
+package com.moip.hackday.jbot.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

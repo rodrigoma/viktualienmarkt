@@ -1,4 +1,4 @@
-package com.moip.hackday;
+package com.moip.hackday.util;
 
 import org.json.JSONObject;
 

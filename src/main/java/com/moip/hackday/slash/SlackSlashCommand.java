@@ -1,7 +1,8 @@
-package com.moip.hackday;
+package com.moip.hackday.slash;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.moip.hackday.jbot.model.ButtonAttachment;
 import com.moip.hackday.domain.ProductExtrator;
 import com.moip.hackday.domain.entity.Product;
 import com.moip.hackday.domain.repository.ProductRepository;

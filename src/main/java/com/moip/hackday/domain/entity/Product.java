@@ -1,7 +1,7 @@
 package com.moip.hackday.domain.entity;
 
-import com.moip.hackday.Action;
-import com.moip.hackday.ButtonAttachment;
+import com.moip.hackday.jbot.model.Action;
+import com.moip.hackday.jbot.model.ButtonAttachment;
 import me.ramswaroop.jbot.core.slack.models.Attachment;
 import me.ramswaroop.jbot.core.slack.models.RichMessage;
 import org.bson.types.ObjectId;
