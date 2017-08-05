@@ -29,7 +29,7 @@ public class BrenjoeiBot extends Bot {
     @Autowired
     private ProductRepository productRepository;
 
-    @Value("${slackBotToken}")
+    @Value("${slack.token.bot}")
     private String slackToken;
 
     @Override
@@ -100,7 +100,7 @@ public class BrenjoeiBot extends Bot {
         product.setSellerName(username);
 
         if (!event.getText().equalsIgnoreCase("não")) {
-            product.setUrl(event.getText().replace("<","").replace(">",""));
+            product.setUrl(event.getText().replace("<", "").replace(">", ""));
         }
 
         productRepository.save(product);

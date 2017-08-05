@@ -21,7 +21,7 @@ public class SlackSlashCommand {
 
     private static final Logger logger = LoggerFactory.getLogger(SlackSlashCommand.class);
 
-    @Value("${slashCommandToken}")
+    @Value("${slack.token.slash-command}")
     private String slackToken;
 
     @Autowired
@@ -31,15 +31,15 @@ public class SlackSlashCommand {
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public RichMessage create(@RequestParam("token") String token,
-                                             @RequestParam("team_id") String teamId,
-                                             @RequestParam("team_domain") String teamDomain,
-                                             @RequestParam("channel_id") String channelId,
-                                             @RequestParam("channel_name") String channelName,
-                                             @RequestParam("user_id") String userId,
-                                             @RequestParam("user_name") String userName,
-                                             @RequestParam("command") String command,
-                                             @RequestParam("text") String text,
-                                             @RequestParam("response_url") String responseUrl) {
+                              @RequestParam("team_id") String teamId,
+                              @RequestParam("team_domain") String teamDomain,
+                              @RequestParam("channel_id") String channelId,
+                              @RequestParam("channel_name") String channelName,
+                              @RequestParam("user_id") String userId,
+                              @RequestParam("user_name") String userName,
+                              @RequestParam("command") String command,
+                              @RequestParam("text") String text,
+                              @RequestParam("response_url") String responseUrl) {
         if (!token.equals(slackToken)) {
             return new RichMessage("Sorry! You're not lucky enough to use our slack command.");
         }
@@ -56,7 +56,7 @@ public class SlackSlashCommand {
 
         RichMessage richMessage = new RichMessage("Product " + product.getName() + " offered for sale!");
         richMessage.setResponseType("ephemeral");
-        
+
         if (logger.isDebugEnabled()) {
             try {
                 logger.debug("Reply (RichMessage): {}", new ObjectMapper().writeValueAsString(richMessage));
@@ -64,7 +64,7 @@ public class SlackSlashCommand {
                 logger.debug("Error parsing RichMessage: ", e);
             }
         }
-        
+
         return richMessage.encodedMessage();
     }
 
@@ -72,15 +72,15 @@ public class SlackSlashCommand {
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public RichMessage list(@RequestParam("token") String token,
-                                             @RequestParam("team_id") String teamId,
-                                             @RequestParam("team_domain") String teamDomain,
-                                             @RequestParam("channel_id") String channelId,
-                                             @RequestParam("channel_name") String channelName,
-                                             @RequestParam("user_id") String userId,
-                                             @RequestParam("user_name") String userName,
-                                             @RequestParam("command") String command,
-                                             @RequestParam("text") String text,
-                                             @RequestParam("response_url") String responseUrl) {
+                            @RequestParam("team_id") String teamId,
+                            @RequestParam("team_domain") String teamDomain,
+                            @RequestParam("channel_id") String channelId,
+                            @RequestParam("channel_name") String channelName,
+                            @RequestParam("user_id") String userId,
+                            @RequestParam("user_name") String userName,
+                            @RequestParam("command") String command,
+                            @RequestParam("text") String text,
+                            @RequestParam("response_url") String responseUrl) {
         if (!token.equals(slackToken)) {
             return new RichMessage("Sorry! You're not lucky enough to use our slack command.");
         }
@@ -94,7 +94,7 @@ public class SlackSlashCommand {
         richMessage.setAttachments(att);
         richMessage.setResponseType("ephemeral");
 
-        if (att.length  < 1) {
+        if (att.length < 1) {
             richMessage.setText("Não encontrei nenhuma oferta interessante :(");
         }
 
