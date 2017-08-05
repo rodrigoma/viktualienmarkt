@@ -69,7 +69,13 @@ public class Product {
 
     @Override
     public String toString() {
-        return getName() + " " + getPrice() + " offered by " + getSellerName() + "\n" + getUrl() + "\n \n";
+        return "Product{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", price='" + price + '\'' +
+                ", url='" + url + '\'' +
+                ", sellerName='" + sellerName + '\'' +
+                '}';
     }
 
     public List<Attachment> toAttachments(String userId, String userName) {
@@ -125,74 +131,4 @@ public class Product {
 
         return attachmentList;
     }
-
-
-//    public Attachment toAttachment(String userId, String userName) {
-//        Attachment attachment = new Attachment();
-//        attachment.setColor("8B008B");
-//
-//        attachment.setTitle(name);
-//        attachment.setText("Quer vender '" + getName() + "' por: " + getPrice());
-//
-//        attachment.setAuthorName("@" + getSellerName());
-//        attachment.setAuthorLink("https://moip.slack.com/team/" + getSellerName());
-//
-//        if (getSellerName().equals(userId) || getSellerName().equals(userName)) {
-//            Action sold = new Action();
-//
-//            sold.setName("sold");
-//            sold.setText("Marcar como vendido");
-//            sold.setType("button");
-//            sold.setStyle("good");
-//            sold.setValue(getId());
-//
-//            attachment.setActions(new Action[1]);
-//            attachment.getActions()[0] = sold;
-//        }
-//
-//        if (!getUrl().isEmpty()) {
-//            attachment.setThumbUrl(getUrl());
-//        }
-//
-//        return attachment;
-//    }
-
-//    public RichMessage toRichMessage() {
-//        RichMessage richMessage = new RichMessage("Aqui está o produto:");
-//        Attachment productName = new Attachment();
-//        Attachment productPrice = new Attachment();
-//        Attachment confirmButton = new Attachment();
-//
-//        productName.setTitle(getName());
-//        productName.setImageUrl(getUrl());
-//        productPrice.setTitle("Preço");
-//        productPrice.setText(getPrice());
-//
-//        Action confirm = new Action();
-//        Action cancel = new Action();
-//
-//        confirm.setName("confirm");
-//        confirm.setText("Confirmar");
-//        confirm.setType("button");
-//        confirm.setStyle("good");
-//        confirm.setValue("confirm");
-//
-//        cancel.setName("cancel");
-//        cancel.setText("Cancelar");
-//        cancel.setType("button");
-//        cancel.setStyle("danger");
-//        cancel.setValue("cancel");
-//
-//        Action[] actions = new Action[]{confirm, cancel};
-//        confirmButton.setActions(actions);
-//        confirmButton.setFallback("Confirmar");
-//        confirmButton.setTitle("Confirmar");
-//        confirmButton.setCallbackId(getId());
-//        confirmButton.setColor("#3AA3E3");
-//        confirmButton.setAttachmentType("default");
-//
-//        Attachment[] attachments = new Attachment[]{productName, productPrice, confirmButton};
-//        richMessage.setAttachments(attachments);
-//        return richMessage;
-//    }
 }

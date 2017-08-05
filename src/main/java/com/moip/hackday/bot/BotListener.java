@@ -26,7 +26,7 @@ public class BotListener extends Bot {
 
     private static final Logger logger = LoggerFactory.getLogger(BotListener.class);
 
-    private final static Map<String, Product> PRODUCTS = new HashMap();
+    public final static Map<String, Product> PRODUCTS = new HashMap();
 
     @Autowired
     private ProductRepository productRepository;

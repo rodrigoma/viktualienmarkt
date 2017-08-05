@@ -110,37 +110,6 @@ public class SlashCommandApi {
         return richMessage.encodedMessage();
     }
 
-    @RequestMapping(value = "/products/clear", method = POST, consumes = APPLICATION_FORM_URLENCODED_VALUE)
-    public RichMessage clear(@RequestParam("token") String token,
-                             @RequestParam("team_id") String teamId,
-                             @RequestParam("team_domain") String teamDomain,
-                             @RequestParam("channel_id") String channelId,
-                             @RequestParam("channel_name") String channelName,
-                             @RequestParam("user_id") String userId,
-                             @RequestParam("user_name") String userName,
-                             @RequestParam("command") String command,
-                             @RequestParam("text") String text,
-                             @RequestParam("response_url") String responseUrl) {
-
-        if (!token.equals(slackToken)) {
-            return new RichMessage("Sorry! You're not lucky enough to use our slack command.");
-        }
-
-        productRepository.deleteAll();
-
-        RichMessage richMessage = createRichMessage("Cleaned up!", null);
-
-        if (logger.isDebugEnabled()) {
-            try {
-                logger.debug("Reply (RichMessage): {}", new ObjectMapper().writeValueAsString(richMessage));
-            } catch (JsonProcessingException e) {
-                logger.debug("Error parsing RichMessage: ", e);
-            }
-        }
-
-        return richMessage.encodedMessage();
-    }
-
     @RequestMapping(value = "/products/action", method = POST, consumes = APPLICATION_JSON_VALUE)
     public RichMessage action(@RequestBody String body) {
         logger.info(body);
