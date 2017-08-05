@@ -99,6 +99,16 @@ public class BotListener extends Bot {
         finnishConversation(event);
     }
 
+    @Controller(pattern = "(valew)|(thanks)|(tks)|(thank you)", events = {DIRECT_MESSAGE})
+    public void endConversation(WebSocketSession session, Event event) {
+        logger.info("Products in queue: {} ", PRODUCTS.size());
+        logger.info("[5] End Conversation: {} ", toStr(event));
+
+        reply(session, event, new Message("Welcome! It's a pleasure help you."));
+
+        finnishConversation(event);
+    }
+
     private Product getProduct(Event event) {
         if (!PRODUCTS.containsKey(event.getUserId())) {
             PRODUCTS.put(event.getUserId(), new Product());
