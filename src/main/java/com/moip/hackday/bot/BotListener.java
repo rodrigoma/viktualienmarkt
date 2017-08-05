@@ -131,7 +131,9 @@ public class BotListener extends Bot {
             return Optional.of(PRODUCTS.get(event.getUserId()));
         } else {
             if (createNew) {
-                return Optional.of(PRODUCTS.put(event.getUserId(), new Product()));
+                Product newProduct = new Product();
+                PRODUCTS.put(event.getUserId(), newProduct);
+                return Optional.of(newProduct);
             }
         }
 
