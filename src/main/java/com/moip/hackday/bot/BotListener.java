@@ -83,7 +83,7 @@ public class BotListener extends Bot {
     @Controller(events = {DIRECT_MESSAGE})
     public void productImage(WebSocketSession session, Event event) {
         logger.info("Products in queue: {} ", PRODUCTS.size());
-        logger.info("[3] productImage(): {} ", toStr(event));
+        logger.info("[4] productImage(): {} ", toStr(event));
 
         Product product = getProduct(event);
 

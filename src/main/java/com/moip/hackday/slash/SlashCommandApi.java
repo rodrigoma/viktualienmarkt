@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moip.hackday.domain.ProductExtractor;
 import com.moip.hackday.domain.entity.Product;
 import com.moip.hackday.domain.repository.ProductRepository;
-import com.moip.hackday.jbot.model.ButtonAttachment;
+import me.ramswaroop.jbot.core.slack.models.Attachment;
 import me.ramswaroop.jbot.core.slack.models.RichMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -59,10 +59,7 @@ public class SlashCommandApi {
 
         product = productRepository.save(product);
 
-        RichMessage richMessage = new RichMessage("Product " + product.getName() + " offered for sale!");
-        richMessage.setResponseType("ephemeral");
-
-        //TODO AQUI retornar um preview do anuncio
+        RichMessage richMessage = createRichMessage("Here is the product:", product.toAttachments(userId, userName));
 
         if (logger.isDebugEnabled()) {
             try {
@@ -90,18 +87,17 @@ public class SlashCommandApi {
             return new RichMessage("Sorry! You're not lucky enough to use our slack command.");
         }
 
-        List<Product> products = productRepository.findByNameLike(text);
-        List<ButtonAttachment> attachments = products.stream().map(p -> p.toAttachment(userId, userName)).collect(toList());
-        ButtonAttachment[] att = new ButtonAttachment[attachments.size()];
-        att = attachments.toArray(att);
+        List<Product> productList = productRepository.findByNameLike(text);
 
-        RichMessage richMessage = new RichMessage("I found some interesting offers :)");
-        richMessage.setAttachments(att);
-        richMessage.setResponseType("ephemeral");
+        List<Attachment> attachmentList = new ArrayList();
+        productList.forEach(product -> attachmentList.addAll(product.toAttachments(userId, userName)));
 
-        if (att.length < 1) {
-            richMessage.setText("I did not find any interesting offers, sorry. :(");
+        String msg = "I found some interesting offers :)";
+        if (attachmentList.size() < 1) {
+            msg = "I did not find any interesting offers, sorry. :(";
         }
+
+        RichMessage richMessage = createRichMessage(msg, attachmentList);
 
         if (logger.isDebugEnabled()) {
             try {
@@ -132,8 +128,7 @@ public class SlashCommandApi {
 
         productRepository.deleteAll();
 
-        RichMessage richMessage = new RichMessage("Cleaned up!");
-        richMessage.setResponseType("ephemeral");
+        RichMessage richMessage = createRichMessage("Cleaned up!", null);
 
         if (logger.isDebugEnabled()) {
             try {
@@ -150,8 +145,7 @@ public class SlashCommandApi {
     public RichMessage action(@RequestBody String body) {
         logger.info(body);
 
-        RichMessage richMessage = new RichMessage("Test Action");
-        richMessage.setResponseType("ephemeral");
+        RichMessage richMessage = createRichMessage("Test Action", null);
 
         if (logger.isDebugEnabled()) {
             try {
@@ -162,5 +156,13 @@ public class SlashCommandApi {
         }
 
         return richMessage.encodedMessage();
+    }
+
+    private RichMessage createRichMessage(String message, List<Attachment> attachmentList) {
+        RichMessage richMessage = new RichMessage();
+        richMessage.setResponseType("ephemeral");
+        richMessage.setText(message);
+        richMessage.setAttachments(attachmentList.stream().toArray(Attachment[]::new));
+        return richMessage;
     }
 }

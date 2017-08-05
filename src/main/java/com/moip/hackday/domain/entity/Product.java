@@ -1,11 +1,13 @@
 package com.moip.hackday.domain.entity;
 
-import com.moip.hackday.jbot.model.Action;
-import com.moip.hackday.jbot.model.ButtonAttachment;
+import me.ramswaroop.jbot.core.slack.models.Action;
 import me.ramswaroop.jbot.core.slack.models.Attachment;
-import me.ramswaroop.jbot.core.slack.models.RichMessage;
+import me.ramswaroop.jbot.core.slack.models.Field;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Product {
 
@@ -70,72 +72,127 @@ public class Product {
         return getName() + " " + getPrice() + " offered by " + getSellerName() + "\n" + getUrl() + "\n \n";
     }
 
-    public ButtonAttachment toAttachment(String userId, String userName) {
-        ButtonAttachment attachment = new ButtonAttachment();
-        attachment.setColor("8B008B");
+    public List<Attachment> toAttachments(String userId, String userName) {
+        List<Attachment> attachmentList = new ArrayList();
 
-        attachment.setTitle(name);
-        attachment.setText("Quer vender '" + getName() + "' por: " + getPrice());
+        Attachment productAtt = new Attachment();
+        productAtt.setFallback("");
+        productAtt.setText("");
+        productAtt.setAuthorName("@".concat(this.sellerName));
+        productAtt.setColor("#cae028");
 
-        attachment.setAuthorName("@" + getSellerName());
-        attachment.setAuthorLink("https://moip.slack.com/team/" + getSellerName());
+        Field product = new Field();
+        product.setTitle("PRODUCT");
+        product.setValue(this.name);
+        product.setShortEnough(true);
 
-        if (getSellerName().equals(userId) || getSellerName().equals(userName)) {
-            Action sold = new Action();
+        Field price = new Field();
+        price.setTitle("PRICE");
+        price.setValue(this.price);
+        price.setShortEnough(true);
 
-            sold.setName("sold");
-            sold.setText("Marcar como vendido");
-            sold.setType("button");
-            sold.setStyle("good");
-            sold.setValue(getId());
+        productAtt.setFields(new Field[]{product, price});
 
-            attachment.setActions(new Action[1]);
-            attachment.getActions()[0] = sold;
+        attachmentList.add(productAtt);
+
+        Attachment imageAtt = new Attachment();
+        imageAtt.setFallback("");
+        imageAtt.setText("");
+        imageAtt.setTitle("Merely illustrative image");
+        imageAtt.setImageUrl(this.url);
+        imageAtt.setColor("#439FE0");
+
+        attachmentList.add(imageAtt);
+
+        if (this.sellerName.equals(userId) || this.sellerName.equals(userName)) {
+            Attachment buttonAtt = new Attachment();
+            buttonAtt.setFallback("");
+            buttonAtt.setTitle("");
+            buttonAtt.setCallbackId(this.id);
+            buttonAtt.setColor("#e0283a");
+            buttonAtt.setAttachmentType("default");
+
+            Action action = new Action();
+            action.setName("solded");
+            action.setText("Mark as solded");
+            action.setType("button");
+            action.setValue("solded");
+
+            buttonAtt.setActions(new Action[]{action});
+
+            attachmentList.add(buttonAtt);
         }
 
-        if (!getUrl().isEmpty()) {
-            attachment.setThumbUrl(getUrl());
-        }
-
-        return attachment;
+        return attachmentList;
     }
 
-    public RichMessage toRichMessage() {
-        RichMessage richMessage = new RichMessage("Aqui está o produto:");
-        Attachment productName = new Attachment();
-        Attachment productPrice = new Attachment();
-        ButtonAttachment confirmButton = new ButtonAttachment();
 
-        productName.setTitle(getName());
-        productName.setImageUrl(getUrl());
-        productPrice.setTitle("Preço");
-        productPrice.setText(getPrice());
+//    public Attachment toAttachment(String userId, String userName) {
+//        Attachment attachment = new Attachment();
+//        attachment.setColor("8B008B");
+//
+//        attachment.setTitle(name);
+//        attachment.setText("Quer vender '" + getName() + "' por: " + getPrice());
+//
+//        attachment.setAuthorName("@" + getSellerName());
+//        attachment.setAuthorLink("https://moip.slack.com/team/" + getSellerName());
+//
+//        if (getSellerName().equals(userId) || getSellerName().equals(userName)) {
+//            Action sold = new Action();
+//
+//            sold.setName("sold");
+//            sold.setText("Marcar como vendido");
+//            sold.setType("button");
+//            sold.setStyle("good");
+//            sold.setValue(getId());
+//
+//            attachment.setActions(new Action[1]);
+//            attachment.getActions()[0] = sold;
+//        }
+//
+//        if (!getUrl().isEmpty()) {
+//            attachment.setThumbUrl(getUrl());
+//        }
+//
+//        return attachment;
+//    }
 
-        Action confirm = new Action();
-        Action cancel = new Action();
-
-        confirm.setName("confirm");
-        confirm.setText("Confirmar");
-        confirm.setType("button");
-        confirm.setStyle("good");
-        confirm.setValue("confirm");
-
-        cancel.setName("cancel");
-        cancel.setText("Cancelar");
-        cancel.setType("button");
-        cancel.setStyle("danger");
-        cancel.setValue("cancel");
-
-        Action[] actions = new Action[]{confirm, cancel};
-        confirmButton.setActions(actions);
-        confirmButton.setFallback("Confirmar");
-        confirmButton.setTitle("Confirmar");
-        confirmButton.setCallbackId(getId());
-        confirmButton.setColor("#3AA3E3");
-        confirmButton.setAttachmentType("default");
-
-        Attachment[] attachments = new Attachment[]{productName, productPrice, confirmButton};
-        richMessage.setAttachments(attachments);
-        return richMessage;
-    }
+//    public RichMessage toRichMessage() {
+//        RichMessage richMessage = new RichMessage("Aqui está o produto:");
+//        Attachment productName = new Attachment();
+//        Attachment productPrice = new Attachment();
+//        Attachment confirmButton = new Attachment();
+//
+//        productName.setTitle(getName());
+//        productName.setImageUrl(getUrl());
+//        productPrice.setTitle("Preço");
+//        productPrice.setText(getPrice());
+//
+//        Action confirm = new Action();
+//        Action cancel = new Action();
+//
+//        confirm.setName("confirm");
+//        confirm.setText("Confirmar");
+//        confirm.setType("button");
+//        confirm.setStyle("good");
+//        confirm.setValue("confirm");
+//
+//        cancel.setName("cancel");
+//        cancel.setText("Cancelar");
+//        cancel.setType("button");
+//        cancel.setStyle("danger");
+//        cancel.setValue("cancel");
+//
+//        Action[] actions = new Action[]{confirm, cancel};
+//        confirmButton.setActions(actions);
+//        confirmButton.setFallback("Confirmar");
+//        confirmButton.setTitle("Confirmar");
+//        confirmButton.setCallbackId(getId());
+//        confirmButton.setColor("#3AA3E3");
+//        confirmButton.setAttachmentType("default");
+//
+//        Attachment[] attachments = new Attachment[]{productName, productPrice, confirmButton};
+//        richMessage.setAttachments(attachments);
+//        return richMessage;
+//    }
 }
