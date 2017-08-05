@@ -2,25 +2,31 @@ package com.moip.hackday.slash;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.moip.hackday.jbot.model.ButtonAttachment;
-import com.moip.hackday.domain.ProductExtrator;
+import com.moip.hackday.domain.ProductExtractor;
 import com.moip.hackday.domain.entity.Product;
 import com.moip.hackday.domain.repository.ProductRepository;
+import com.moip.hackday.jbot.model.ButtonAttachment;
 import me.ramswaroop.jbot.core.slack.models.RichMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
+import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
-public class SlackSlashCommand {
+public class SlashCommandApi {
 
-    private static final Logger logger = LoggerFactory.getLogger(SlackSlashCommand.class);
+    private static final Logger logger = LoggerFactory.getLogger(SlashCommandApi.class);
 
     @Value("${slack.token.slash-command}")
     private String slackToken;
@@ -28,9 +34,7 @@ public class SlackSlashCommand {
     @Autowired
     private ProductRepository productRepository;
 
-    @RequestMapping(value = "/products/create",
-            method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @RequestMapping(value = "/products/create", method = POST, consumes = APPLICATION_FORM_URLENCODED_VALUE)
     public RichMessage create(@RequestParam("token") String token,
                               @RequestParam("team_id") String teamId,
                               @RequestParam("team_domain") String teamDomain,
@@ -45,18 +49,20 @@ public class SlackSlashCommand {
             return new RichMessage("Sorry! You're not lucky enough to use our slack command.");
         }
 
-        ProductExtrator extrator = new ProductExtrator(text);
+        ProductExtractor extractor = new ProductExtractor(text);
 
         Product product = new Product()
                 .setSellerName(userName)
-                .setName(extrator.getName())
-                .setPrice(extrator.getPrice())
-                .setUrl(extrator.getUrl());
+                .setName(extractor.getName())
+                .setPrice(extractor.getPrice())
+                .setUrl(extractor.getUrl());
 
         product = productRepository.save(product);
 
         RichMessage richMessage = new RichMessage("Product " + product.getName() + " offered for sale!");
         richMessage.setResponseType("ephemeral");
+
+        //TODO AQUI retornar um preview do anuncio
 
         if (logger.isDebugEnabled()) {
             try {
@@ -69,9 +75,7 @@ public class SlackSlashCommand {
         return richMessage.encodedMessage();
     }
 
-    @RequestMapping(value = "/products/list",
-            method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @RequestMapping(value = "/products/list", method = POST, consumes = APPLICATION_FORM_URLENCODED_VALUE)
     public RichMessage list(@RequestParam("token") String token,
                             @RequestParam("team_id") String teamId,
                             @RequestParam("team_domain") String teamDomain,
@@ -87,16 +91,16 @@ public class SlackSlashCommand {
         }
 
         List<Product> products = productRepository.findByNameLike(text);
-        List<ButtonAttachment> attachments = products.stream().map(p -> p.toAttachment(userId, userName)).collect(Collectors.toList());
+        List<ButtonAttachment> attachments = products.stream().map(p -> p.toAttachment(userId, userName)).collect(toList());
         ButtonAttachment[] att = new ButtonAttachment[attachments.size()];
         att = attachments.toArray(att);
 
-        RichMessage richMessage = new RichMessage("Encontrei algumas ofertas interessantes :)");
+        RichMessage richMessage = new RichMessage("I found some interesting offers :)");
         richMessage.setAttachments(att);
         richMessage.setResponseType("ephemeral");
 
         if (att.length < 1) {
-            richMessage.setText("Não encontrei nenhuma oferta interessante :(");
+            richMessage.setText("I did not find any interesting offers, sorry. :(");
         }
 
         if (logger.isDebugEnabled()) {
@@ -110,9 +114,7 @@ public class SlackSlashCommand {
         return richMessage.encodedMessage();
     }
 
-    @RequestMapping(value = "/products/clear",
-            method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @RequestMapping(value = "/products/clear", method = POST, consumes = APPLICATION_FORM_URLENCODED_VALUE)
     public RichMessage clear(@RequestParam("token") String token,
                              @RequestParam("team_id") String teamId,
                              @RequestParam("team_domain") String teamDomain,
@@ -144,14 +146,11 @@ public class SlackSlashCommand {
         return richMessage.encodedMessage();
     }
 
-    @RequestMapping(value = "/products/action",
-            method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/products/action", method = POST, consumes = APPLICATION_JSON_VALUE)
     public RichMessage action(@RequestBody String body) {
-
         logger.info(body);
 
-        RichMessage richMessage = new RichMessage("Qq coisa");
+        RichMessage richMessage = new RichMessage("Test Action");
         richMessage.setResponseType("ephemeral");
 
         if (logger.isDebugEnabled()) {

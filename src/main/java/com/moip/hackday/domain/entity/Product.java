@@ -16,7 +16,7 @@ public class Product {
 
     private String price;
 
-    private String url = "http://www.milleniumfm.com.br/assets/photo-placeholder-ea19bdc940a9ea756fb519b9f3e82a5c.png";
+    private String url = "http://i.imgur.com/ZR1TyFJ.jpg";
 
     private String sellerName;
 

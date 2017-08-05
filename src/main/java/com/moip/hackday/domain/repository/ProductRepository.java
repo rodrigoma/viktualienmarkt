@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface ProductRepository extends MongoRepository<Product, String> {
 
-    public List<Product> findByNameLike(String name);
+    List<Product> findByNameLike(String name);
 
 }
