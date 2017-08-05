@@ -1,4 +1,4 @@
-package com.moip.hackday;
+package me.ramswaroop.jbot.core.slack.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

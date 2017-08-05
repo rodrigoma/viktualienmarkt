@@ -1,16 +1,23 @@
 package com.moip.hackday.domain;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ProductExtrator {
+import static java.util.regex.Pattern.compile;
+
+public class ProductExtractor {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProductExtractor.class);
 
     private Matcher matcher;
 
-    public ProductExtrator(String source) {
-        Pattern p = Pattern.compile("(.+)\\s*por\\s*(R\\$\\s*[\\d,.]+)\\s*(.+)?");
+    public ProductExtractor(String source) {
+        Pattern p = compile("(.+)\\s*por\\s*(R\\$\\s*[\\d,.]+)\\s*(.+)?");
 
         matcher = p.matcher(source);
         matcher.find();
@@ -30,6 +37,7 @@ public class ProductExtrator {
             new URL(url);
             return url.trim();
         } catch (MalformedURLException ex) {
+            logger.error("MalformedURLException: " + url);
             return "";
         }
     }
